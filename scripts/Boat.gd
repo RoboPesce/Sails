@@ -1,13 +1,21 @@
 extends KinematicBody
 
+# max velocity
+export var max_velocity = 5
+# horizontal "friction" scalar to keep boat from drifting sideways
+export var friction_x = .1
+# minimum forward velocity, to keep boats from moving backwards
+export var min_z = 0
 # max sail rotation speed
 export var sail_angular_speed = .5
 export var sail_angular_lerp = .9
 
 onready var sail_pivot = $HullMesh/SailPivot
 # keeps track of local rotation of sail
-# 3D vector with y component = 0
-var sail_dir : Vector3 = Vector3(0, 0, 1)
+
+var velocity : Vector3
+# normalized vector with y component = 0, represents direction of sail
+var sail_dir : Vector3 = Vector3.BACK
 # set on init
 var global=null
 
@@ -18,6 +26,7 @@ func _ready():
 	
 func init(_global):
 	global = _global
+	# set initial velocity?
 	
 func _physics_process(_delta):
 	# find intended travel direction
@@ -25,12 +34,21 @@ func _physics_process(_delta):
 	# turn sail
 	var rotation = get_sail_rotation_needed(dir) * _delta
 	turn_sail(rotation)
-	# move and rotate boat
-#	var force_2D = get_sail_force()
-#	var force = Vector3(force_2D.x, 0, force_2D.y)
-#	var forward = global_transform.basis.z
-#	force *= forward.dot(force) * speed * _delta
-#	move_and_collide(force)
+	# get force
+	var force = get_sail_force()
+	# apply force to velocity
+	velocity += force
+	# get local version of velocity for friction/bounds
+	var local_velocity = transform.xform_inv(velocity)
+	local_velocity.x *= friction_x
+	if(local_velocity.z < min_z): local_velocity.z = min_z
+	velocity = transform.xform(local_velocity)
+	var velocity_len = velocity.length()
+	if(velocity_len > max_velocity): velocity = (max_velocity / velocity_len) * velocity
+	# rotate the boat
+	look_at(velocity + translation, Vector3.UP)
+	# move the boat
+	move_and_collide(velocity * _delta)
 
 # get the (normalized) direction the boat is commanded to go in
 func get_dir() -> Vector3:
@@ -48,7 +66,7 @@ func get_dir() -> Vector3:
 func get_sail_rotation_needed(dir : Vector3) -> float:
 	if(dir == Vector3.ZERO): return 0.0
 	# get angle between sail and dir
-	var global_sail_dir = transform * sail_dir
+	var global_sail_dir = transform.xform(sail_dir)
 	var rads = global_sail_dir.signed_angle_to(dir, Vector3.UP)
 	# find proportion to travel
 	rads *= sail_angular_lerp
@@ -62,9 +80,13 @@ func turn_sail(ang):
 	sail_dir = sail_dir.rotated(Vector3.UP, ang)
 	sail_pivot.rotate_y(ang)
 
-# calculates force vector by dotting the wind and sail direction vectors
-# roughly, this describes the flux of the wind through the sail
-# this force will be applied in the direction of sail_dir
-func get_sail_force():
+# calculates force by dotting the wind and sail direction vectors
+# roughly, this is the flux of the wind through the sail
+# this force is applied in the direction of sail_dir
+func get_sail_force() -> Vector3:
+	# find its "true" strength
+	var global_sail_dir = transform * sail_dir
 	var wind_vec = global.wind * global.wind_strength
-	return sail_dir * sail_dir.dot(wind_vec)
+	# this will be global
+	var force = wind_vec.project(global_sail_dir)
+	return force

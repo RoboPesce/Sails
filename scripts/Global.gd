@@ -9,7 +9,7 @@ onready var mousecast = $MouseCast
 var mouse_pos : Vector3
 
 # wind control
-var wind : Vector2 = Vector2(1, 0)
+var wind : Vector3 = Vector3(1, 0, 0)
 var wind_strength : float
 # wind params
 export var wind_rotational_velocity = 1
@@ -49,9 +49,9 @@ func _process(_delta):
 	elif(wind_strength > wind_max): wind_strength = wind_max
 	
 	if(Input.is_action_pressed("wind_clockwise")):
-		wind = wind.rotated(wind_rotational_velocity * _delta)
+		wind = wind.rotated(Vector3.UP,  wind_rotational_velocity * _delta)
 	if(Input.is_action_pressed("wind_counterclockwise")):
-		wind = wind.rotated(-wind_rotational_velocity * _delta)
+		wind = wind.rotated(Vector3.UP, -wind_rotational_velocity * _delta)
 
 func get_mouse_pos():
 	# get mouse position on water
