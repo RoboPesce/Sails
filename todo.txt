@@ -1,0 +1,20 @@
+-calculate movement for boats
+-water shader
+-volcano smoke and water are in direction of wind
+-compass drawing
+-meshes for island, lava ball, whirlwind, shoals
+-controls for island attacks
+-destroy/move ships
+-Ships collide with each other
+-ships land on island
+-ship trail shader and particles
+-sail shader, droop when out of wind
+-etc...
+
+importing mesh workflow:
+-export with glTF 2
+-select embedded instead of binary
+-save into blender_imports
+-open as new scene
+-go into csgmesh nodes
+-make mesh unique, then save to mesh folder

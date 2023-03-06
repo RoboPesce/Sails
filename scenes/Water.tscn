@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://resources/materials/water.tres" type="Material" id=1]
+
+[sub_resource type="PlaneMesh" id=1]
+material = ExtResource( 1 )
+size = Vector2( 100, 100 )
+subdivide_width = 10
+subdivide_depth = 5
+
+[sub_resource type="BoxShape" id=2]
+extents = Vector3( 50, 1, 50 )
+
+[node name="Water" type="Area"]
+collision_layer = 4
+collision_mask = 0
+
+[node name="WaterMesh" type="MeshInstance" parent="."]
+mesh = SubResource( 1 )
+
+[node name="CollisionShape" type="CollisionShape" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0 )
+shape = SubResource( 2 )
+
+[node name="DELETE" type="DirectionalLight" parent="."]
+transform = Transform( 0.0256979, -0.992763, -0.117307, 0.782581, -0.0530368, 0.620285, -0.622018, -0.107742, 0.775555, 4.6789, 15.8798, 31.1883 )
