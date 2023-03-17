@@ -13,22 +13,25 @@ export var sail_angular_lerp = .9
 onready var sail_pivot = $HullMesh/SailPivot
 # keeps track of local rotation of sail
 
+# set on init
+var global=null
 var velocity : Vector3
 # normalized vector with y component = 0, represents direction of sail
 var sail_dir : Vector3 = Vector3.BACK
-# set on init
-var global=null
+var sinking : bool = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	# for debugging!!!!
 	if(!global): global = get_parent()
+	$AnimationPlayer.play("bob")
 	
 func init(_global):
 	global = _global
 	# set initial velocity?
 	
 func _physics_process(_delta):
+	if sinking: return
 	# find intended travel direction
 	var dir = get_dir()
 	# turn sail
@@ -48,7 +51,15 @@ func _physics_process(_delta):
 	# rotate the boat
 	look_at(velocity + translation, Vector3.UP)
 	# move the boat
-	move_and_collide(velocity * _delta)
+	var collision = move_and_collide(velocity * _delta)
+	if(collision):
+		print()
+		if(collision.collider.get_collision_layer_bit(1)): # is a boat
+			sink()
+			collision.sink()
+			return
+		if(collision.collider.get_collision_layer_bit(0)): # is the island
+			pass
 
 # get the (normalized) direction the boat is commanded to go in
 func get_dir() -> Vector3:
@@ -75,7 +86,7 @@ func get_sail_rotation_needed(dir : Vector3) -> float:
 	elif(rads < -sail_angular_speed): rads = -sail_angular_speed
 	return rads
 
-# turns the sail the set angle in rads
+# turns the sail the given angle in rads
 func turn_sail(ang):
 	sail_dir = sail_dir.rotated(Vector3.UP, ang)
 	sail_pivot.rotate_y(ang)
@@ -90,3 +101,14 @@ func get_sail_force() -> Vector3:
 	# this will be global
 	var force = wind_vec.project(global_sail_dir)
 	return force
+
+# sinks the boat by removing the collider, then sliding downward
+# until it disappears, then queue_freeing
+func sink():
+	sinking = true
+	$CollisionShape.queue_free()
+	$AnimationPlayer.play("sink")
+	var timer = Timer.new()
+	timer.connect("timeout",self,"queue_free") 
+	add_child(timer)
+	timer.start(3)
