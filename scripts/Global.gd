@@ -2,7 +2,7 @@ extends Spatial
 
 const RAY_LENGTH = 200.0
 
-onready var camera = $Camera
+onready var camera = $MainCamera
 onready var mousecast = $MouseCast
 
 # store data such as compass mode and wind
@@ -14,7 +14,7 @@ var wind_strength : float
 # wind params
 export var wind_rotational_velocity = 1
 export var wind_strength_velocity = 2
-export var wind_max = 10
+export var wind_max = 3
 
 # boat control
 var is_compass_cardinal : bool
