@@ -21,8 +21,15 @@ transform = Transform( 1, 0, 0, 0, 0.6639, 0.747821, 0, -0.747821, 0.6639, 0, 28
 
 [node name="Water" parent="." instance=ExtResource( 2 )]
 
-[node name="mousepoint" type="MeshInstance" parent="."]
-mesh = SubResource( 1 )
-
 [node name="Boat" parent="." instance=ExtResource( 3 )]
 transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0 )
+max_velocity = null
+min_velocity = null
+friction = null
+max_rot_velocity = null
+torque_dist = null
+sail_angular_speed = null
+sail_angular_lerp = null
+
+[node name="mousepoint" type="MeshInstance" parent="."]
+mesh = SubResource( 1 )

@@ -12,9 +12,10 @@ var mouse_pos : Vector3
 var wind : Vector3 = Vector3(1, 0, 0)
 var wind_strength : float
 # wind params
-export var wind_rotational_velocity = 1
-export var wind_strength_velocity = 2
-export var wind_max = 3
+export var wind_rotational_velocity : float = .2
+export var wind_strength_velocity : float = .2
+export var wind_max : float = 1
+export var wind_min : float = 0.1
 
 # boat control
 var is_compass_cardinal : bool
@@ -24,6 +25,8 @@ var compass_dir : Vector3
 func _ready():
 	# in case camera is moved
 	mousecast.set_translation(camera.get_translation())
+	
+	wind_strength = wind_min
 
 func _process(_delta):
 	get_mouse_pos()
@@ -36,7 +39,7 @@ func _process(_delta):
 	if(is_compass_cardinal): 
 		compass_dir = (mouse_pos - compass_center)
 		if(compass_dir != Vector3.ZERO): compass_dir /= compass_dir.length()
-	else: $mousepoint.set_translation(mousecast.get_collision_point())
+	else: $mousepoint.set_translation(mousecast.get_collision_point()) # debug
 	# otherwise boats will just try to go towards the mouse
 	
 	# wind controls
@@ -45,8 +48,7 @@ func _process(_delta):
 	if(Input.is_action_pressed("wind_weaker")):
 		wind_strength -= wind_strength_velocity * _delta
 	# bounds check
-	if(wind_strength < 0): wind_strength = 0
-	elif(wind_strength > wind_max): wind_strength = wind_max
+	wind_strength = clamp(wind_strength, wind_min, wind_max)
 	
 	if(Input.is_action_pressed("wind_clockwise")):
 		wind = wind.rotated(Vector3.UP,  wind_rotational_velocity * _delta)
