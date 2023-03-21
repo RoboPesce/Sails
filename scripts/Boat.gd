@@ -39,6 +39,7 @@ func _ready():
 func init(_global):
 	global = _global
 	# set initial velocity?
+	# set initial rotation?
 	
 func _physics_process(_delta):
 	if sinking: return
@@ -57,7 +58,7 @@ func _physics_process(_delta):
 # get the (normalized) direction the boat is commanded to go in
 func get_dir() -> Vector3:
 	# if(!global): return Vector3.ZERO
-	var dir
+	var dir : Vector3
 	if(global.is_compass_cardinal):
 		dir = global.compass_dir #normalized by default
 	else:
@@ -69,15 +70,19 @@ func get_dir() -> Vector3:
 # gets the rotation needed of the sail in radians towards dir
 func get_sail_rotation_needed(dir : Vector3) -> float:
 	if(dir == Vector3.ZERO): return 0.0
+	# make dir local
+	dir = transform.xform(dir)
+	$dir_indicator_debug.rotate_y((-$dir_indicator_debug.transform.basis.z).signed_angle_to(dir, Vector3.UP)) # Debug
+
 	# get angle between sail and dir
-	var global_sail_dir : Vector3 = transform.xform(sail_dir.transform.basis.z)
-	var rads = global_sail_dir.signed_angle_to(dir, Vector3.UP)
+	var rads = (-sail_dir.transform.basis.z).signed_angle_to(dir, Vector3.UP)
+	print("angle: ", rads) # debug
 	# find proportion to travel
 	rads = clamp(rads * sail_angular_lerp, -sail_angular_speed, sail_angular_speed)
 	return rads
 
 # turns the sail the given angle in rads
-func turn_sail(ang):
+func turn_sail(ang) -> void:
 	sail_dir.rotate_y(ang)
 	sail_dir.transform = sail_dir.transform.orthonormalized() # (preserves shape from floating point errors)
 	sail_pivot.rotate_y(ang)
@@ -87,25 +92,24 @@ func turn_sail(ang):
 # roughly, this is the flux of the wind through the sail
 # this force is applied in the direction of sail_dir
 func get_sail_force() -> Vector3:
-	# find its "true" strength
-	var global_sail_dir : Vector3 = transform.xform(sail_dir.transform.basis.z)
-	var wind_vec = global.wind * global.wind_strength
-	# this will be global
-	var force = wind_vec.project(global_sail_dir)
+	var wind_vec : Vector3 = transform.xform(global.wind * global.wind_strength)
+	# this will be local
+	var force = wind_vec.project(-sail_dir.transform.basis.z)
 	return force
 
 # z component of force becomes acceleration
 # x component of force acts as a torque with fixed distance
-func apply_sail_force(force : Vector3, delta : float):
-	# find local translation of force
-	force = transform.xform_inv(force)
-	print(force.normalized())
+func apply_sail_force(force : Vector3, delta : float) -> void:
+	# print(force.normalized(), " ", force.length()) # debug
 	velocity = clamp(velocity + force.z - friction * delta, min_velocity, max_velocity)
 	if(force.z < 0): force.x *= -1
 	rot_velocity = clamp(force.x * torque_dist, -max_rot_velocity, max_rot_velocity)
+	
+	$force_indicator_debug.rotate_y((-$force_indicator_debug.transform.basis.z).signed_angle_to(force, Vector3.UP)) # Debug
 
 func turn_and_move(_delta):
-	pass
+	$windicator_debug.rotate_y((-$windicator_debug.transform.basis.z).signed_angle_to(transform.xform(global.wind), Vector3.UP)) # Debug
+	$sail_indicator_debug.rotate_y((-$sail_indicator_debug.transform.basis.z).signed_angle_to(sail_dir.transform.basis.z, Vector3.UP)) # Debug
 #	print("velocity is ", velocity)
 	# turn the boat
 #	rotate_y(rot_velocity * _delta)

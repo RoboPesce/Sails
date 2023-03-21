@@ -12,7 +12,7 @@ var mouse_pos : Vector3
 var wind : Vector3 = Vector3(1, 0, 0)
 var wind_strength : float
 # wind params
-export var wind_rotational_velocity : float = .2
+export var wind_rotational_velocity : float = .6
 export var wind_strength_velocity : float = .2
 export var wind_max : float = 1
 export var wind_min : float = 0.1
@@ -50,9 +50,9 @@ func _process(_delta):
 	# bounds check
 	wind_strength = clamp(wind_strength, wind_min, wind_max)
 	
-	if(Input.is_action_pressed("wind_clockwise")):
-		wind = wind.rotated(Vector3.UP,  wind_rotational_velocity * _delta)
 	if(Input.is_action_pressed("wind_counterclockwise")):
+		wind = wind.rotated(Vector3.UP,  wind_rotational_velocity * _delta)
+	if(Input.is_action_pressed("wind_clockwise")):
 		wind = wind.rotated(Vector3.UP, -wind_rotational_velocity * _delta)
 
 func get_mouse_pos():
