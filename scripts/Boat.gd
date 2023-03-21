@@ -3,9 +3,9 @@ extends KinematicBody
 # PARAMS
 export var max_velocity : float = 5
 # minimum forward velocity, to keep boats from moving backwards
-export var min_velocity : float = 0
+export var min_velocity : float = 0.1
 # friction applied to forward velocity
-export var friction : float = .5
+export var friction : float = 0.05
 # max rotational velocity, in radians
 export var max_rot_velocity : float = .5
 # fixed torque distance for horizontal wind force (also roughly corresponds to friction/decay)
@@ -50,7 +50,7 @@ func _physics_process(_delta):
 	# get force
 	var force = get_sail_force()
 	# apply force to velocity and rotation
-	apply_sail_force(force)
+	apply_sail_force(force, _delta)
 	
 	turn_and_move(_delta)
 
@@ -96,21 +96,23 @@ func get_sail_force() -> Vector3:
 
 # z component of force becomes acceleration
 # x component of force acts as a torque with fixed distance
-func apply_sail_force(force : Vector3):
+func apply_sail_force(force : Vector3, delta : float):
 	# find local translation of force
 	force = transform.xform_inv(force)
-	velocity = clamp(velocity + force.z - friction * _delta, min_velocity, max_velocity)
+	print(force.normalized())
+	velocity = clamp(velocity + force.z - friction * delta, min_velocity, max_velocity)
 	if(force.z < 0): force.x *= -1
 	rot_velocity = clamp(force.x * torque_dist, -max_rot_velocity, max_rot_velocity)
 
 func turn_and_move(_delta):
-	print("velocity is ", velocity)
+	pass
+#	print("velocity is ", velocity)
 	# turn the boat
-	rotate_y(rot_velocity * _delta)
-	transform = transform.orthonormalized() # (preserves shape from floating point errors)
+#	rotate_y(rot_velocity * _delta)
+#	transform = transform.orthonormalized() # (preserves shape from floating point errors)
 
 	# move the boat and handle collisions
-	var collision = move_and_collide(transform.basis.z * velocity * _delta)
+#	var collision = move_and_collide(transform.basis.z * velocity * _delta)
 #	if(collision):
 #		print()
 #		if(collision.collider.get_collision_layer_bit(1)): # is a boat
