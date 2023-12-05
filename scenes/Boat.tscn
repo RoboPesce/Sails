@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://resources/meshes/boat_meshes/sail.tres" type="ArrayMesh" id=1]
 [ext_resource path="res://resources/meshes/boat_meshes/mast.tres" type="ArrayMesh" id=2]
@@ -103,6 +103,11 @@ albedo_color = Color( 0.160784, 0.341176, 0.262745, 1 )
 
 [sub_resource type="SpatialMaterial" id=8]
 
+[sub_resource type="SphereMesh" id=10]
+
+[sub_resource type="SpatialMaterial" id=11]
+albedo_color = Color( 0.298039, 0.882353, 0.443137, 1 )
+
 [sub_resource type="SpatialMaterial" id=9]
 albedo_color = Color( 0.419608, 0.290196, 0.831373, 1 )
 
@@ -143,7 +148,7 @@ transform = Transform( 0.9754, -0.0686031, 0.209495, 0, 0.950342, 0.311207, -0.2
 [node name="windicator_debug" type="Spatial" parent="."]
 
 [node name="pointer" type="MeshInstance" parent="windicator_debug"]
-transform = Transform( 1, 0, 0, 0, -6.17506e-09, -0.221438, 0, 1.65241, -1.13219e-07, 0, 7.56258, 0 )
+transform = Transform( 1, 0, 0, 0, -6.17506e-09, -0.221438, 0, 1.65241, -1.13219e-07, 0, 7.11261, 0 )
 mesh = SubResource( 5 )
 skeleton = NodePath("../..")
 material/0 = SubResource( 6 )
@@ -166,11 +171,15 @@ mesh = SubResource( 5 )
 skeleton = NodePath("../..")
 material/0 = SubResource( 8 )
 
+[node name="force_pos" type="MeshInstance" parent="force_indicator_debug"]
+mesh = SubResource( 10 )
+material/0 = SubResource( 11 )
+
 [node name="dir_indicator_debug" type="Spatial" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.21687, 0 )
 
 [node name="pointer" type="MeshInstance" parent="dir_indicator_debug"]
-transform = Transform( 1, 0, 0, 0, -6.17506e-09, -0.221438, 0, 1.74347, -1.19458e-07, 0, 7.56258, 0 )
+transform = Transform( 1, 0, 0, 0, -6.17506e-09, -0.221438, 0, 1.74347, -1.19458e-07, 0, 7.77208, 0 )
 mesh = SubResource( 5 )
 skeleton = NodePath("../..")
 material/0 = SubResource( 9 )

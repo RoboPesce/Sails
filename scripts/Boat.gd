@@ -5,7 +5,7 @@ export var max_velocity : float = 5
 # minimum forward velocity, to keep boats from moving backwards
 export var min_velocity : float = 0.1
 # friction applied to forward velocity
-export var friction : float = 0.05
+export var friction : float = 1
 # max rotational velocity, in radians
 export var max_rot_velocity : float = .5
 # fixed torque distance for horizontal wind force (also roughly corresponds to friction/decay)
@@ -43,46 +43,40 @@ func init(_global):
 	
 func _physics_process(_delta):
 	if sinking: return
-	# find intended travel direction
-	var dir = get_dir()
-	# turn sail
-	var rotation = get_sail_rotation_needed(dir) * _delta
-	turn_sail(rotation)
-	# get force
-	var force = get_sail_force()
+	turn_sail(_delta)
 	# apply force to velocity and rotation
-	apply_sail_force(force, _delta)
+	apply_sail_force(_delta)
 	
 	turn_and_move(_delta)
 
 # get the (normalized) direction the boat is commanded to go in
-func get_dir() -> Vector3:
+func get_dir_to_mouse() -> Vector3:
 	# if(!global): return Vector3.ZERO
 	var dir : Vector3
 	if(global.is_compass_cardinal):
-		dir = global.compass_dir #normalized by default
+		dir = global.compass_dir # normalized by default
 	else:
 		dir = global.mouse_pos - transform.origin
 		dir.y = 0
 		if(dir != Vector3.ZERO): dir /= dir.length()
 	return dir
 
-# gets the rotation needed of the sail in radians towards dir
-func get_sail_rotation_needed(dir : Vector3) -> float:
-	if(dir == Vector3.ZERO): return 0.0
-	# make dir local
-	dir = transform.xform(dir)
-	$dir_indicator_debug.rotate_y((-$dir_indicator_debug.transform.basis.z).signed_angle_to(dir, Vector3.UP)) # Debug
-
-	# get angle between sail and dir
-	var rads = (-sail_dir.transform.basis.z).signed_angle_to(dir, Vector3.UP)
-	print("angle: ", rads) # debug
-	# find proportion to travel
-	rads = clamp(rads * sail_angular_lerp, -sail_angular_speed, sail_angular_speed)
-	return rads
-
 # turns the sail the given angle in rads
-func turn_sail(ang) -> void:
+func turn_sail(delta : float) -> void:
+	# find intended travel direction
+	var mouse_dir : Vector3 = get_dir_to_mouse()
+	var ang : float
+	if (mouse_dir == Vector3.ZERO): ang = 0.0
+	else:
+		# make dir local
+		mouse_dir = transform.xform(mouse_dir)
+		$dir_indicator_debug.rotate_y((-$dir_indicator_debug.transform.basis.z).signed_angle_to(mouse_dir, Vector3.UP)) # Debug
+
+		# get angle between sail and mouse_dir
+		ang = (-sail_dir.transform.basis.z).signed_angle_to(mouse_dir, Vector3.UP)
+		# find proportion to travel
+		ang = clamp(ang * sail_angular_lerp, -sail_angular_speed, sail_angular_speed) * delta
+	
 	sail_dir.rotate_y(ang)
 	sail_dir.transform = sail_dir.transform.orthonormalized() # (preserves shape from floating point errors)
 	sail_pivot.rotate_y(ang)
@@ -92,24 +86,27 @@ func turn_sail(ang) -> void:
 # roughly, this is the flux of the wind through the sail
 # this force is applied in the direction of sail_dir
 func get_sail_force() -> Vector3:
-	var wind_vec : Vector3 = transform.xform(global.wind * global.wind_strength)
+	var wind_vec : Vector3 = transform.xform_inv(global.wind * global.wind_strength)
 	# this will be local
-	var force = wind_vec.project(-sail_dir.transform.basis.z)
+	var force = wind_vec.project(sail_dir.transform.basis.z)
 	return force
 
-# z component of force becomes acceleration
-# x component of force acts as a torque with fixed distance
-func apply_sail_force(force : Vector3, delta : float) -> void:
-	# print(force.normalized(), " ", force.length()) # debug
+func apply_sail_force(delta : float) -> void:
+	# get force, modify components if negative
+	var force = get_sail_force()
+	if (force.z < 0): 
+		force.z = 0
+		force.x *= -1
+	if (Time.get_ticks_usec()%10 < 5): print(force.normalized(), " ", force.length(), " | accel: ", force.z) # debug
 	velocity = clamp(velocity + force.z - friction * delta, min_velocity, max_velocity)
-	if(force.z < 0): force.x *= -1
 	rot_velocity = clamp(force.x * torque_dist, -max_rot_velocity, max_rot_velocity)
 	
 	$force_indicator_debug.rotate_y((-$force_indicator_debug.transform.basis.z).signed_angle_to(force, Vector3.UP)) # Debug
+	$force_indicator_debug/force_pos.transform.origin = $force_indicator_debug.transform.xform_inv(15*force) # Debug
 
 func turn_and_move(_delta):
 	$windicator_debug.rotate_y((-$windicator_debug.transform.basis.z).signed_angle_to(transform.xform(global.wind), Vector3.UP)) # Debug
-	$sail_indicator_debug.rotate_y((-$sail_indicator_debug.transform.basis.z).signed_angle_to(sail_dir.transform.basis.z, Vector3.UP)) # Debug
+	$sail_indicator_debug.rotate_y(($sail_indicator_debug.transform.basis.z).signed_angle_to(sail_dir.transform.basis.z, Vector3.UP)) # Debug
 #	print("velocity is ", velocity)
 	# turn the boat
 #	rotate_y(rot_velocity * _delta)
