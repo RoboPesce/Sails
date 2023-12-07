@@ -22,7 +22,7 @@ transform = Transform( 1, 0, 0, 0, 0.6639, 0.747821, 0, -0.747821, 0.6639, 0, 28
 [node name="Water" parent="." instance=ExtResource( 2 )]
 
 [node name="Boat" parent="." instance=ExtResource( 3 )]
-transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0 )
+transform = Transform( -0.905154, 0, -0.425084, 0, 1, 0, 0.425084, 0, -0.905154, 9.01889, 0, -6.80861 )
 
 [node name="mousepoint" type="MeshInstance" parent="."]
 mesh = SubResource( 1 )

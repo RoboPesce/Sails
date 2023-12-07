@@ -1,7 +1,8 @@
 [gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://resources/materials/water.tres" type="Material" id=1]
-[ext_resource path="res://scenes/Water.gd" type="Script" id=2]
+[ext_resource path="res://scripts/Water.gd" type="Script" id=2]
+
 
 [sub_resource type="PlaneMesh" id=1]
 material = ExtResource( 1 )
