@@ -56,7 +56,7 @@ func get_dir_to_mouse() -> Vector3:
 		dir = global.mouse_pos - transform.origin
 		dir.y = 0
 		if(dir != Vector3.ZERO): dir = dir.normalized()
-	return -dir
+	return dir
 
 func turn_sail(delta : float) -> void:
 	# find intended travel direction
@@ -71,8 +71,8 @@ func turn_sail(delta : float) -> void:
 		mouse_dir.y = $dir_indicator_debug.transform.origin.y # DEBUG
 		$dir_indicator_debug.transform = $dir_indicator_debug.transform.looking_at(mouse_dir, Vector3.UP) # DEBUG
 		#if (Time.get_ticks_usec()%10 < 2): print(-$dir_indicator_debug/pointer.transform.basis.z) # DEBUG
-		mouse_dir.y = 0 # DEBUG
-		if (Time.get_ticks_usec()%10 < 2): print(oldmouse_dir, " => ", mouse_dir) # DEBUG
+		#mouse_dir.y = 0 # DEBUG
+		#if (Time.get_ticks_usec()%10 < 2): print(oldmouse_dir, " => ", mouse_dir) # DEBUG
 
 		# get angle between sail and mouse_dir
 		mouse_dir.y = sail_dir.transform.origin.y
@@ -84,8 +84,6 @@ func turn_sail(delta : float) -> void:
 	sail_dir.transform = sail_dir.transform.orthonormalized() # (preserves shape from floating point errors)
 	sail_pivot.rotate_y(ang)
 	sail_pivot.transform = sail_pivot.transform.orthonormalized() # (preserves shape from floating point errors)
-	
-	$sail_indicator_debug.rotate_y(($sail_indicator_debug.transform.basis.z).signed_angle_to(sail_dir.transform.basis.z, Vector3.UP)) # DEBUG
 
 # calculates force by dotting the wind and sail direction vectors
 # roughly, this is the flux of the wind through the sail
