@@ -85,14 +85,16 @@ func turn_sail(delta : float) -> void:
 	sail_pivot.rotate_y(ang)
 	sail_pivot.transform = sail_pivot.transform.orthonormalized() # (preserves shape from floating point errors)
 
-# calculates force by dotting the wind and sail direction vectors
+# calculates force by projecting the wind vector into the sail direction
 # roughly, this is the flux of the wind through the sail
 # this force is applied in the direction of sail_dir
 func get_sail_force() -> Vector3:
-	$windicator_debug.rotate_y((-$windicator_debug.transform.basis.z).signed_angle_to(transform.xform(global.wind), Vector3.UP)) # DEBUG
-	var wind_vec : Vector3 = transform.xform_inv(global.wind * global.wind_strength)
+	var wind_vec : Vector3 = transform.basis.xform_inv(global.wind * global.wind_strength)
+	$windicator_debug.transform = $windicator_debug.transform.looking_at(wind_vec, Vector3.UP) # DEBUG
+	#if (Time.get_ticks_usec()%10 < 2): print("wind_vec: ", wind_vec) # DEBUG
 	# this will be local
 	var force = wind_vec.project(sail_dir.transform.basis.z)
+	if (Time.get_ticks_usec()%10 < 2): print(wind_vec, " ", sail_dir.transform.basis.z, " | force_vec: ", force) # DEBUG
 	return force
 
 func apply_sail_force(delta : float) -> void:
@@ -101,7 +103,7 @@ func apply_sail_force(delta : float) -> void:
 	if (force.z < 0): 
 		force.z = 0
 		force.x *= -1
-	# if (Time.get_ticks_usec()%10 < 5): print(force.normalized(), " ", force.length(), " | accel: ", force.z) # DEBUG
+	#if (Time.get_ticks_usec()%10 < 2): print(force.normalized(), " | accel: ", force.z) # DEBUG
 	velocity = clamp(velocity + force.z - friction * delta, min_velocity, max_velocity)
 	rot_velocity = clamp(force.x * torque_dist, -max_rot_velocity, max_rot_velocity)
 	
@@ -109,10 +111,11 @@ func apply_sail_force(delta : float) -> void:
 	$force_indicator_debug/force_pos.transform.origin = $force_indicator_debug.transform.xform_inv(15*force) # DEBUG
 
 func turn_and_move(_delta):
+	pass
 	#if (Time.get_ticks_usec()%10 < 2): print("velocity is ", velocity) # DEBUG
 	# turn the boat
-	#rotate_y(.3 * _delta)
-	transform = transform.orthonormalized() # (preserves shape from floating point errors)
+#	rotate_y(.3 * _delta)
+#	transform = transform.orthonormalized() # (preserves shape from floating point errors)
 
 #	# move the boat and handle collisions
 #	var collision = move_and_collide(transform.basis.z * velocity * _delta)
