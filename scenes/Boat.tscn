@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://resources/meshes/boat_meshes/sail.tres" type="ArrayMesh" id=1]
 [ext_resource path="res://resources/meshes/boat_meshes/mast.tres" type="ArrayMesh" id=2]
@@ -9,6 +9,11 @@
 
 [sub_resource type="SpatialMaterial" id=7]
 albedo_color = Color( 0.160784, 0.341176, 0.262745, 1 )
+
+[sub_resource type="SphereMesh" id=10]
+
+[sub_resource type="SpatialMaterial" id=11]
+albedo_color = Color( 0.298039, 0.882353, 0.443137, 1 )
 
 [sub_resource type="Animation" id=3]
 length = 0.001
@@ -101,13 +106,6 @@ extents = Vector3( 1, 0.916353, 2.5821 )
 [sub_resource type="SpatialMaterial" id=6]
 albedo_color = Color( 0.87451, 0.203922, 0, 1 )
 
-[sub_resource type="SpatialMaterial" id=8]
-
-[sub_resource type="SphereMesh" id=10]
-
-[sub_resource type="SpatialMaterial" id=11]
-albedo_color = Color( 0.298039, 0.882353, 0.443137, 1 )
-
 [sub_resource type="SpatialMaterial" id=9]
 albedo_color = Color( 0.419608, 0.290196, 0.831373, 1 )
 
@@ -117,7 +115,7 @@ collision_mask = 3
 script = ExtResource( 3 )
 
 [node name="HullMesh" type="CSGMesh" parent="."]
-transform = Transform( -1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, 0, 0, 0 )
+transform = Transform( -1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, 0 )
 mesh = ExtResource( 4 )
 
 [node name="MastMesh" type="CSGMesh" parent="HullMesh"]
@@ -133,11 +131,17 @@ mesh = ExtResource( 1 )
 
 [node name="SailDir" type="Spatial" parent="."]
 
-[node name="pointer" type="MeshInstance" parent="SailDir"]
+[node name="pointer_debug" type="MeshInstance" parent="SailDir"]
 transform = Transform( 1, 0, 0, 0, 1.58594e-07, 0.221438, 0, -1.74347, 1.38817e-07, 0, 9.82322, 0 )
 mesh = SubResource( 5 )
 skeleton = NodePath("../..")
 material/0 = SubResource( 7 )
+
+[node name="force_pos_debug" type="MeshInstance" parent="SailDir"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.17077, 0 )
+mesh = SubResource( 10 )
+skeleton = NodePath("")
+material/0 = SubResource( 11 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 autoplay = "bob"
@@ -154,29 +158,16 @@ transform = Transform( -0.7345, 0.211188, -0.64491, 0, 0.950342, 0.311207, 0.678
 
 [node name="windicator_debug" type="Spatial" parent="."]
 
-[node name="pointer" type="MeshInstance" parent="windicator_debug"]
+[node name="pointer_debug" type="MeshInstance" parent="windicator_debug"]
 transform = Transform( 1, 0, 0, 0, 1.50633e-07, 0.221438, 0, -1.65241, 1.32578e-07, 0, 7.11261, 0 )
 mesh = SubResource( 5 )
 skeleton = NodePath("../..")
 material/0 = SubResource( 6 )
 
-[node name="force_indicator_debug" type="Spatial" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.17077, 0 )
-
-[node name="pointer" type="MeshInstance" parent="force_indicator_debug"]
-transform = Transform( 1, 0, 0, 0, 1.58594e-07, 0.221438, 0, -1.74347, 1.38817e-07, 0, 8.72351, 0 )
-mesh = SubResource( 5 )
-skeleton = NodePath("../..")
-material/0 = SubResource( 8 )
-
-[node name="force_pos" type="MeshInstance" parent="force_indicator_debug"]
-mesh = SubResource( 10 )
-material/0 = SubResource( 11 )
-
 [node name="dir_indicator_debug" type="Spatial" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.21687, 0 )
 
-[node name="pointer" type="MeshInstance" parent="dir_indicator_debug"]
+[node name="pointer_debug" type="MeshInstance" parent="dir_indicator_debug"]
 transform = Transform( 1, 0, 0, 0, 1.58594e-07, 0.221438, 0, -1.74347, 1.38817e-07, 0, 5.42648, 0 )
 mesh = SubResource( 5 )
 skeleton = NodePath("../..")

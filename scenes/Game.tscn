@@ -25,4 +25,4 @@ transform = Transform( 1, 0, 0, 0, 0.6639, 0.747821, 0, -0.747821, 0.6639, 0, 28
 mesh = SubResource( 1 )
 
 [node name="Boat" parent="." instance=ExtResource( 3 )]
-transform = Transform( 0.544288, 0, -0.838898, 0, 1, 0, 0.838898, 0, 0.544288, 8.97982, 0, -6.77634 )
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 9, 0, -7 )

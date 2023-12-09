@@ -70,7 +70,7 @@ func turn_sail(delta : float) -> void:
 		
 		mouse_dir.y = $dir_indicator_debug.transform.origin.y # DEBUG
 		$dir_indicator_debug.transform = $dir_indicator_debug.transform.looking_at(mouse_dir, Vector3.UP) # DEBUG
-		#if (Time.get_ticks_usec()%10 < 2): print(-$dir_indicator_debug/pointer.transform.basis.z) # DEBUG
+		#if (Time.get_ticks_usec()%10 < 2): print(-$dir_indicator_debug/pointer_debug.transform.basis.z) # DEBUG
 		#mouse_dir.y = 0 # DEBUG
 		#if (Time.get_ticks_usec()%10 < 2): print(oldmouse_dir, " => ", mouse_dir) # DEBUG
 
@@ -94,8 +94,8 @@ func get_sail_force() -> Vector3:
 	#if (Time.get_ticks_usec()%10 < 2): print("wind_vec: ", wind_vec) # DEBUG
 	# this will be local
 	var force = wind_vec.project(sail_dir.transform.basis.z)
-	if (Time.get_ticks_usec()%10 < 2): print(wind_vec, " ", sail_dir.transform.basis.z, " | force_vec: ", force) # DEBUG
-	return force
+	if (Time.get_ticks_usec()%10 < 2): print(wind_vec, " ", sail_dir.transform.basis.z, " | force_vec: ", force.normalized()) # DEBUG
+	return -force # negated so positive force is forward
 
 func apply_sail_force(delta : float) -> void:
 	# get force, modify components if negative
@@ -107,8 +107,7 @@ func apply_sail_force(delta : float) -> void:
 	velocity = clamp(velocity + force.z - friction * delta, min_velocity, max_velocity)
 	rot_velocity = clamp(force.x * torque_dist, -max_rot_velocity, max_rot_velocity)
 	
-	$force_indicator_debug.rotate_y((-$force_indicator_debug.transform.basis.z).signed_angle_to(force, Vector3.UP)) # DEBUG
-	$force_indicator_debug/force_pos.transform.origin = $force_indicator_debug.transform.xform_inv(15*force) # DEBUG
+	$SailDir/force_pos_debug.transform.origin = $SailDir.transform.basis.xform_inv(15*force) # DEBUG
 
 func turn_and_move(_delta):
 	pass
