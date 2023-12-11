@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=2]
+
+[sub_resource type="CylinderShape" id=1]
+
+[node name="Island" type="StaticBody"]
+
+[node name="IslandMesh" type="MeshInstance" parent="."]
+
+[node name="CollisionShape" type="CollisionShape" parent="."]
+shape = SubResource( 1 )
