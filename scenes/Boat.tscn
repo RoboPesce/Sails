@@ -153,9 +153,6 @@ anims/sink = SubResource( 4 )
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.602718, 0 )
 shape = SubResource( 2 )
 
-[node name="DELETE" type="DirectionalLight" parent="."]
-transform = Transform( -0.7345, 0.211188, -0.64491, 0, 0.950342, 0.311207, 0.678608, 0.228581, -0.698027, 0, 2.35964, -11.2658 )
-
 [node name="windicator_debug" type="Spatial" parent="."]
 
 [node name="pointer_debug" type="MeshInstance" parent="windicator_debug"]

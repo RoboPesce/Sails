@@ -65,7 +65,6 @@ func turn_sail(delta : float) -> void:
 	if (mouse_dir == Vector3.ZERO): ang = 0.0
 	else:
 		# make dir local
-		var oldmouse_dir = mouse_dir # DEBUG
 		mouse_dir = transform.basis.xform_inv(mouse_dir)
 		
 		mouse_dir.y = $dir_indicator_debug.transform.origin.y # DEBUG
