@@ -9,7 +9,7 @@ export var friction : float = 1
 # max rotational velocity, in radians
 export var max_rot_velocity : float = .5
 # fixed torque distance for horizontal wind force (also roughly corresponds to friction/decay)
-export var torque_dist : float = .5
+export var torque_dist : float = .25
 # max sail rotation speed
 export var sail_angular_speed : float = .5
 # otherwise, how fast the sail turns towards its target
@@ -96,8 +96,8 @@ func get_sail_force() -> Vector3:
 	# this will be local
 	var force = wind_vec.project(-sail_dir.transform.basis.z)
 	if (force.z > 0): force.z = 0 # if force points behind the boat, neutralize the forward component
-	if (Time.get_ticks_usec()%100 < 5): print(wind_vec, " ", -sail_dir.transform.basis.z, " | force_vec: ", force.normalized(), " magnitude: ", force.length()) # DEBUG
-	return force
+#	if (Time.get_ticks_usec()%100 < 5): print(wind_vec, " ", -sail_dir.transform.basis.z, " | force_vec: ", force.normalized(), " magnitude: ", force.length()) # DEBUG
+	return -force # force is negated so that force.z equals forward acceleration
 
 func apply_sail_force(delta : float) -> void:
 	# get force, modify components if negative
@@ -109,21 +109,20 @@ func apply_sail_force(delta : float) -> void:
 	$SailDir/force_pos_debug.transform.origin = $SailDir.transform.basis.xform_inv(15*force) # DEBUG
 
 func turn_and_move(_delta):
-	pass
 	#if (Time.get_ticks_usec()%10 < 2): print("velocity is ", velocity) # DEBUG
 	# turn the boat
-#	rotate_y(.3 * _delta)
-#	transform = transform.orthonormalized() # (preserves shape from floating point errors)
+	rotate_y(rot_velocity * torque_dist)
+	transform = transform.orthonormalized() # (preserves shape from floating point errors)
 
-#	# move the boat and handle collisions
-#	var collision = move_and_collide(transform.basis.z * velocity * _delta)
-#	if(collision):
-#		print("collided")
-#		if(collision.collider.get_collision_layer_bit(1)): # is a boat
-#			sink()
-#			collision.sink()
-#		elif(collision.collider.get_collision_layer_bit(0)): # is the island
-#			print("landed on island")
+	# move the boat and handle collisions
+	var collision = move_and_collide(-transform.basis.z * velocity * _delta)
+	if(collision):
+		print("collided")
+		if(collision.collider.get_collision_layer_bit(1)): # is a boat
+			sink()
+			collision.collider.sink()
+		elif(collision.collider.get_collision_layer_bit(0)): # is the island
+			print("landed on island")
 
 # sinks the boat by removing the collider, then sliding downward
 # until it disappears, then queue_freeing
