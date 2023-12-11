@@ -92,18 +92,17 @@ func get_sail_force() -> Vector3:
 	var wind_vec : Vector3 = transform.basis.xform_inv(global.wind * global.wind_strength)
 	$windicator_debug.transform = $windicator_debug.transform.looking_at(wind_vec, Vector3.UP) # DEBUG
 	#if (Time.get_ticks_usec()%10 < 2): print("wind_vec: ", wind_vec) # DEBUG
+	if (wind_vec.dot(-sail_dir.transform.basis.z) < 0): return Vector3.ZERO # if wind goes into boat, instead provide no force
 	# this will be local
-	var force = wind_vec.project(sail_dir.transform.basis.z)
-	if (Time.get_ticks_usec()%10 < 2): print(wind_vec, " ", sail_dir.transform.basis.z, " | force_vec: ", force.normalized()) # DEBUG
-	return -force # negated so positive force is forward
+	var force = wind_vec.project(-sail_dir.transform.basis.z)
+	if (force.z > 0): force.z = 0 # if force points behind the boat, neutralize the forward component
+	if (Time.get_ticks_usec()%100 < 5): print(wind_vec, " ", -sail_dir.transform.basis.z, " | force_vec: ", force.normalized(), " magnitude: ", force.length()) # DEBUG
+	return force
 
 func apply_sail_force(delta : float) -> void:
 	# get force, modify components if negative
 	var force = get_sail_force()
-	if (force.z < 0): 
-		force.z = 0
-		force.x *= -1
-	#if (Time.get_ticks_usec()%10 < 2): print(force.normalized(), " | accel: ", force.z) # DEBUG
+#	if (Time.get_ticks_usec()%100 < 5):  print(force.normalized(), " | accel: ", force.z) # DEBUG
 	velocity = clamp(velocity + force.z - friction * delta, min_velocity, max_velocity)
 	rot_velocity = clamp(force.x * torque_dist, -max_rot_velocity, max_rot_velocity)
 	
