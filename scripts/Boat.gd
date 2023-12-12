@@ -17,7 +17,7 @@ export var sail_angular_lerp : float = .9
 
 # References
 # set on init
-var global : Global = null
+var global = null
 # allows rotation of sail mesh
 onready var sail_pivot : Spatial = $HullMesh/SailPivot
 # keeps track of rotation of sail
