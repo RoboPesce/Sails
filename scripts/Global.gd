@@ -29,7 +29,7 @@ func _ready():
 	wind_strength = wind_min
 
 func _process(_delta):
-	get_mouse_pos()
+	cache_mouse_pos()
 	# check if compass is cardinal, if so save compass center
 	if(Input.is_action_just_pressed("compass_cardinal")): 
 		is_compass_cardinal = true
@@ -55,7 +55,7 @@ func _process(_delta):
 	if(Input.is_action_pressed("wind_clockwise")):
 		wind = wind.rotated(Vector3.UP, -wind_rotational_velocity * _delta)
 
-func get_mouse_pos():
+func cache_mouse_pos() -> void:
 	# get mouse position on water
 	var mouse = get_viewport().get_mouse_position() # mouse position in viewport
 	var raycast = camera.project_ray_normal(mouse) * RAY_LENGTH # vector from camera to mouse

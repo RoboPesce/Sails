@@ -17,7 +17,7 @@ export var sail_angular_lerp : float = .9
 
 # References
 # set on init
-var global = null
+var global : Global = null
 # allows rotation of sail mesh
 onready var sail_pivot : Spatial = $HullMesh/SailPivot
 # keeps track of rotation of sail
@@ -32,11 +32,10 @@ var sinking : bool = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	if(!global): global = get_parent() # TEMP
+	if(!global): global = get_parent()
 	$AnimationPlayer.play("bob")
 
-#func init(_global):
-#	global = _global
+#func init():
 #	# set initial velocity?
 #	# set initial rotation?
 	

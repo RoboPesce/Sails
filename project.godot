@@ -18,6 +18,10 @@ config/name="Sails"
 run/main_scene="res://scenes/Game.tscn"
 config/icon="res://icon.png"
 
+[autoload]
+
+Global="*res://scripts/Global.gd"
+
 [input]
 
 wind_clockwise={

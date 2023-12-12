@@ -1,11 +1,8 @@
--calculate movement for boats
--water shader
 -volcano smoke and water are in direction of wind
 -compass drawing
--meshes for island, lava ball, whirlwind, shoals
+-meshes for lava ball, whirlwind, shoals
 -controls for island attacks
--destroy/move ships
--Ships collide with each other
+-destroy ships
 -ships land on island
 -ship trail shader and particles
 -sail shader, droop when out of wind
