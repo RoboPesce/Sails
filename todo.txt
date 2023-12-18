@@ -10,7 +10,6 @@
 
 importing mesh workflow:
 -export with glTF 2
--select embedded instead of binary
 -save into blender_imports
 -open as new scene
 -go into csgmesh nodes
