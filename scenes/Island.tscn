@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://scripts/Island.gd" type="Script" id=1]
 [ext_resource path="res://resources/meshes/island.tres" type="ArrayMesh" id=2]
@@ -9,13 +9,57 @@ albedo_color = Color( 0.423529, 0.380392, 0.380392, 1 )
 [sub_resource type="ConcavePolygonShape" id=3]
 data = PoolVector3Array( -0.8129, 0, -26.6751, -21.2694, 0, 9.5237, -15.2483, 0, -17.2037, -21.2694, 0, 9.5237, 17.1082, 0, 28.4537, 0, 0, 27.42, -21.2694, 0, 9.5237, 22.3052, 0, 16.8008, 17.1082, 0, 28.4537, 28.588, 0, -21.8267, -21.2694, 0, 9.5237, -0.8129, 0, -26.6751, 37.177, 0, 8.2968, 28.588, 0, -21.8267, 42.5743, 0, -2.2342, -21.2694, 0, 9.5237, 28.1905, 0, 7.9204, 22.3052, 0, 16.8008, 28.1905, 0, 7.9204, 28.588, 0, -21.8267, 37.177, 0, 8.2968, -21.2694, 0, 9.5237, 28.588, 0, -21.8267, 28.1905, 0, 7.9204, -21.2694, -1, 9.5237, -0.8129, -1, -26.6751, -15.2483, -1, -17.2037, -0.8129, -1, -26.6751, 42.5743, -1, -2.2342, 28.588, -1, -21.8267, 42.5743, -1, -2.2342, 28.1905, -1, 7.9204, 37.177, -1, 8.2968, 22.3052, -1, 16.8008, 0, -1, 27.42, 17.1082, -1, 28.4537, -0.8129, -1, -26.6751, 28.1905, -1, 7.9204, 42.5743, -1, -2.2342, 28.1905, -1, 7.9204, 0, -1, 27.42, 22.3052, -1, 16.8008, 0, -1, 27.42, -0.8129, -1, -26.6751, -21.2694, -1, 9.5237, -0.8129, -1, -26.6751, 0, -1, 27.42, 28.1905, -1, 7.9204, -0.8129, 0, -26.6751, 28.588, -1, -21.8267, 28.588, 0, -21.8267, -0.8129, 0, -26.6751, -0.8129, -1, -26.6751, 28.588, -1, -21.8267, 22.3052, 0, 16.8008, 17.1082, -1, 28.4537, 17.1082, 0, 28.4537, 22.3052, 0, 16.8008, 22.3052, -1, 16.8008, 17.1082, -1, 28.4537, 0, 0, 27.42, -21.2694, -1, 9.5237, -21.2694, 0, 9.5237, 0, 0, 27.42, 0, -1, 27.42, -21.2694, -1, 9.5237, 42.5743, 0, -2.2342, 37.177, -1, 8.2968, 37.177, 0, 8.2968, 42.5743, 0, -2.2342, 42.5743, -1, -2.2342, 37.177, -1, 8.2968, 28.588, 0, -21.8267, 42.5743, -1, -2.2342, 42.5743, 0, -2.2342, 28.588, 0, -21.8267, 28.588, -1, -21.8267, 42.5743, -1, -2.2342, -15.2483, 0, -17.2037, -0.8129, -1, -26.6751, -0.8129, 0, -26.6751, -15.2483, 0, -17.2037, -15.2483, -1, -17.2037, -0.8129, -1, -26.6751, 28.1905, 0, 7.9204, 22.3052, -1, 16.8008, 22.3052, 0, 16.8008, 28.1905, 0, 7.9204, 28.1905, -1, 7.9204, 22.3052, -1, 16.8008, 17.1082, 0, 28.4537, 0, -1, 27.42, 0, 0, 27.42, 17.1082, 0, 28.4537, 17.1082, -1, 28.4537, 0, -1, 27.42, -21.2694, 0, 9.5237, -15.2483, -1, -17.2037, -15.2483, 0, -17.2037, -21.2694, 0, 9.5237, -21.2694, -1, 9.5237, -15.2483, -1, -17.2037, 37.177, 0, 8.2968, 28.1905, -1, 7.9204, 28.1905, 0, 7.9204, 37.177, 0, 8.2968, 37.177, -1, 8.2968, 28.1905, -1, 7.9204 )
 
-[sub_resource type="ParticlesMaterial" id=4]
-emission_shape = 5
-emission_ring_radius = 3.0
-emission_ring_inner_radius = 0.0
-emission_ring_height = 1.0
-emission_ring_axis = Vector3( 0, 0, 1 )
-gravity = Vector3( 0, 3, 0 )
+[sub_resource type="Shader" id=6]
+code = "shader_type particles;
+
+uniform vec3 wind_dir = vec3(0.0);
+const float gravity = 1.0;
+
+// generates random numbers, found in Godot docs https://docs.godotengine.org/en/3.5/tutorials/performance/vertex_animation/controlling_thousands_of_fish.html
+float rand_from_seed(in uint seed) {
+  int k;
+  int s = int(seed);
+  if (s == 0)
+    s = 305420679;
+  k = s / 127773;
+  s = 16807 * (s - k * 127773) - 2836 * k;
+  if (s < 0)
+    s += 2147483647;
+  seed = uint(s);
+  return float(seed % uint(65536)) / 65535.0;
+}
+
+uint hash(uint x) {
+  x = ((x >> uint(16)) ^ x) * uint(73244475);
+  x = ((x >> uint(16)) ^ x) * uint(73244475);
+  x = (x >> uint(16)) ^ x;
+  return x;
+}
+
+void vertex()
+{
+	if(RESTART) // Runs when particle is first spawned
+	{
+		uint alt_seed1 = hash(NUMBER + uint(1) + RANDOM_SEED);
+		uint alt_seed2 = hash(NUMBER + uint(27) + RANDOM_SEED);
+		uint alt_seed3 = hash(NUMBER + uint(43) + RANDOM_SEED);
+		uint alt_seed4 = hash(NUMBER + uint(111) + RANDOM_SEED);
+		
+		CUSTOM.x = rand_from_seed(alt_seed1);
+		vec3 position = vec3(rand_from_seed(alt_seed2) * 2.0 - 1.0,
+                     0,
+                     rand_from_seed(alt_seed4) * 2.0 - 1.0);
+	
+	TRANSFORM[3].xyz = position;
+	}
+	
+	VELOCITY.z = cos(TIME + CUSTOM.x * 6.28) * 4.0 + 6.0;
+	CUSTOM.y = VELOCITY.z * 0.1;
+}"
+
+[sub_resource type="ShaderMaterial" id=7]
+shader = SubResource( 6 )
+shader_param/wind_dir = Vector3( 0, 0, 0 )
 
 [sub_resource type="SphereMesh" id=5]
 
@@ -39,5 +83,5 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 17.8493, -3.25297 )
 amount = 100
 lifetime = 30.0
 randomness = 0.2
-process_material = SubResource( 4 )
+process_material = SubResource( 7 )
 draw_pass_1 = SubResource( 5 )
