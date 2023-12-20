@@ -3,7 +3,17 @@
 [resource]
 code = "shader_type spatial;
 
+varying flat vec3 color;
+varying flat float alpha;
+
 void vertex()
 {
-	
+	color = INSTANCE_CUSTOM.rgb * INSTANCE_CUSTOM.a;
+	alpha = INSTANCE_CUSTOM.a;
+}
+
+void fragment()
+{
+	ALBEDO = color;
+	ALPHA = alpha;
 }"

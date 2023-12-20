@@ -1,5 +1,8 @@
 shader_type particles;
 
+const float TAU = 2.0 * 3.14159;
+const float PI_OVER_2 = 3.14159 * 0.5;
+
 // for calculating spawn direction
 uniform float ring_radius = 2.0;
 // for calculating movement direction
@@ -7,6 +10,7 @@ uniform vec3 wind_dir = vec3(0.0, 0.0, -1.0);
 uniform float wind_strength = 1.0;
 const float friction = 0.5;
 const float init_vert = 5.0;
+const float init_scale = 0.5;
 
 // generates random numbers, found in Godot docs https://docs.godotengine.org/en/3.5/tutorials/performance/vertex_animation/controlling_thousands_of_fish.html
 float rand_from_seed(in uint seed) 
@@ -31,28 +35,65 @@ uint hash(uint x)
   return x;
 }
 
+float rand_float(int base, uint number, uint random_seed)
+{
+	uint seed = hash(number + uint(base) + random_seed);
+	return rand_from_seed(seed);
+}
+
+vec3 rescaleVector(vec3 vec, float a)
+{
+	float len = length(vec);
+	if (len <= 0.0001) return vec;
+	
+	return vec * ( (len + a) / len );
+}
+
+mat4 rescaleTransform(mat4 transform, float a)
+{
+	transform[0].xyz = rescaleVector(transform[0].xyz, a);
+	transform[1].xyz = rescaleVector(transform[1].xyz, a);
+	transform[2].xyz = rescaleVector(transform[2].xyz, a);
+	return transform;
+}
+
 void vertex()
 {
-	if(RESTART) // Runs when particle is first spawned
+	if (RESTART) // Runs when particle is first spawned
 	{
-		uint alt_seed1 = hash(NUMBER + uint(1) + RANDOM_SEED);
-		uint alt_seed2 = hash(NUMBER + uint(27) + RANDOM_SEED);
-		float angle = rand_from_seed(alt_seed1) * 2.0 * 3.14159;
-		float dist = rand_from_seed(alt_seed2) * ring_radius;
+		// Set particle initial position
+		float angle = rand_float(1, NUMBER, RANDOM_SEED) * TAU;
+		float dist = rand_float(27, NUMBER, RANDOM_SEED) * ring_radius;
 		
-		vec3 position = vec3
-			(
-				cos(angle) * dist,
-                0,
-                sin(angle) * dist
-			);
-	
+		vec3 position = vec3(cos(angle) * dist, 0, sin(angle) * dist);
+		
 		TRANSFORM[3].xyz = position;
 		VELOCITY.y = init_vert;
+		
+		// Set random rotation
+		float x_angle = rand_float(44, NUMBER, RANDOM_SEED) * TAU;
+		TRANSFORM[0].xyz = vec3(cos(x_angle), 0, sin(x_angle));
+		TRANSFORM[2].xyz = vec3(cos(x_angle + PI_OVER_2), 0, sin(x_angle + PI_OVER_2));
+		CUSTOM = vec4(rand_float(45, NUMBER, RANDOM_SEED));
+		
+		// Initial scale
+		TRANSFORM[0] *= init_scale;
+		TRANSFORM[1] *= init_scale;
+		TRANSFORM[2] *= init_scale;
+		
+		CUSTOM.w = 0.75;
 	}
 	
 	VELOCITY.x += wind_dir.x * wind_strength * DELTA;
 	VELOCITY.z += wind_dir.z * wind_strength * DELTA;
-	VELOCITY.y -= DELTA * friction;
-	if (VELOCITY.y < 0.0) VELOCITY.y = 0.0;
+	if (VELOCITY.y > 0.0) VELOCITY.y -= DELTA * friction;
+	
+	// Rescale smoke to slowly grow and shrink
+	float scale = sin((TIME + float(INDEX)) * 1.5) * 0.1 + 0.025;
+	scale *= DELTA;
+	
+	TRANSFORM = rescaleTransform(TRANSFORM, scale);
+	
+	// Set transparency
+	if (CUSTOM.w > 0.0) CUSTOM.w -= DELTA / LIFETIME;
 }
