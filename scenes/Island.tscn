@@ -14,8 +14,12 @@ data = PoolVector3Array( -0.8129, 0, -26.6751, -21.2694, 0, 9.5237, -15.2483, 0,
 [sub_resource type="ShaderMaterial" id=4]
 shader = ExtResource( 3 )
 shader_param/ring_radius = 2.0
+shader_param/spread_multiplier = 0.25
 shader_param/wind_dir = Vector3( 0, 0, -1 )
 shader_param/wind_strength = 1.0
+shader_param/friction = 0.5
+shader_param/init_vert = 5.0
+shader_param/init_scale = 0.5
 
 [node name="Island" type="StaticBody"]
 collision_mask = 0
@@ -28,14 +32,14 @@ material/0 = SubResource( 2 )
 [node name="CollisionShape" type="CollisionShape" parent="."]
 shape = SubResource( 3 )
 
-[node name="DELETE" type="DirectionalLight" parent="."]
-transform = Transform( 1, 0, 0, 0, 0.795949, 0.605363, 0, -0.605363, 0.795949, 0, 71.955, 95.4527 )
-editor_only = true
-
 [node name="Smoke" type="Particles" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 17.8493, -3.25297 )
-amount = 200
-lifetime = 10.0
+amount = 250
+lifetime = 15.0
 randomness = 0.2
 process_material = SubResource( 4 )
 draw_pass_1 = ExtResource( 4 )
+
+[node name="DELETE" type="DirectionalLight" parent="."]
+transform = Transform( 1, 0, 0, 0, 0.795949, 0.605363, 0, -0.605363, 0.795949, 0, 71.955, 95.4527 )
+editor_only = true

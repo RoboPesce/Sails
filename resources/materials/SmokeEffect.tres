@@ -8,7 +8,7 @@ varying flat float alpha;
 
 void vertex()
 {
-	color = INSTANCE_CUSTOM.rgb * INSTANCE_CUSTOM.a;
+	color = INSTANCE_CUSTOM.rgb * INSTANCE_CUSTOM.a * INSTANCE_CUSTOM.a;
 	alpha = INSTANCE_CUSTOM.a;
 }
 

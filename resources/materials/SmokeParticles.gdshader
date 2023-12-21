@@ -4,13 +4,14 @@ const float TAU = 2.0 * 3.14159;
 const float PI_OVER_2 = 3.14159 * 0.5;
 
 // for calculating spawn direction
-uniform float ring_radius = 2.0;
+uniform float ring_radius = 0.7;
+uniform float spread_multiplier = 0.25;
 // for calculating movement direction
 uniform vec3 wind_dir = vec3(0.0, 0.0, -1.0);
 uniform float wind_strength = 1.0;
-const float friction = 0.5;
-const float init_vert = 5.0;
-const float init_scale = 0.5;
+uniform float friction = 0.5;
+uniform float init_vert = 5.0;
+uniform float init_scale = 0.5;
 
 // generates random numbers, found in Godot docs https://docs.godotengine.org/en/3.5/tutorials/performance/vertex_animation/controlling_thousands_of_fish.html
 float rand_from_seed(in uint seed) 
@@ -68,6 +69,8 @@ void vertex()
 		vec3 position = vec3(cos(angle) * dist, 0, sin(angle) * dist);
 		
 		TRANSFORM[3].xyz = position;
+		VELOCITY.x = position.x * spread_multiplier;
+		VELOCITY.z = position.z * spread_multiplier;
 		VELOCITY.y = init_vert;
 		
 		// Set random rotation
@@ -89,7 +92,7 @@ void vertex()
 	if (VELOCITY.y > 0.0) VELOCITY.y -= DELTA * friction;
 	
 	// Rescale smoke to slowly grow and shrink
-	float scale = sin((TIME + float(INDEX)) * 1.5) * 0.1 + 0.025;
+	float scale = sin((TIME + float(INDEX)) * 1.5) * 0.2 + 0.025;
 	scale *= DELTA;
 	
 	TRANSFORM = rescaleTransform(TRANSFORM, scale);

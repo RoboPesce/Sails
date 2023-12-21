@@ -25,4 +25,5 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0 )
 shape = SubResource( 2 )
 
 [node name="DELETE" type="DirectionalLight" parent="."]
-transform = Transform( 0.0256979, -0.992763, -0.117307, 0.782581, -0.0530368, 0.620285, -0.622018, -0.107742, 0.775555, 4.6789, 15.8798, 31.1883 )
+transform = Transform( 0.0256979, -0.992763, -0.117307, -0.719329, -0.0998511, 0.687456, -0.694194, 0.0667159, -0.716689, 0, 0, 0 )
+editor_only = true
