@@ -71,20 +71,20 @@ void vertex()
 		TRANSFORM[3].xyz = position;
 		VELOCITY.x = position.x * spread_multiplier;
 		VELOCITY.z = position.z * spread_multiplier;
-		VELOCITY.y = init_vert;
+		VELOCITY.y = init_vert + rand_float(30, NUMBER, RANDOM_SEED) * spread_multiplier;
 		
 		// Set random rotation
 		float x_angle = rand_float(44, NUMBER, RANDOM_SEED) * TAU;
 		TRANSFORM[0].xyz = vec3(cos(x_angle), 0, sin(x_angle));
 		TRANSFORM[2].xyz = vec3(cos(x_angle + PI_OVER_2), 0, sin(x_angle + PI_OVER_2));
-		CUSTOM = vec4(rand_float(45, NUMBER, RANDOM_SEED));
+		CUSTOM = vec4(0.5 + 0.5 * rand_float(45, NUMBER, RANDOM_SEED));
 		
 		// Initial scale
 		TRANSFORM[0] *= init_scale;
 		TRANSFORM[1] *= init_scale;
 		TRANSFORM[2] *= init_scale;
 		
-		CUSTOM.w = 0.75;
+		CUSTOM.w = 0.90;
 	}
 	
 	VELOCITY.x += wind_dir.x * wind_strength * DELTA;
