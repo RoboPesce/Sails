@@ -1,6 +1,12 @@
 extends Spatial
 
-onready var boat_timer : Timer = $BoatTimer
+onready var BoatScene = preload("res://scenes/Boat.tscn")
+
+func _ready():
+	spawnBoat();
 
 func spawnBoat():
-	print("called spawnBoat")
+	var new_boat = BoatScene.instance()
+	# todo: set position
+	new_boat.transform.origin = Vector3(25.0, 0.0, 0.0)
+	add_child(new_boat)

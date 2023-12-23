@@ -1,6 +1,6 @@
 extends Spatial
 
-const RAY_LENGTH = 200.0
+const RAY_LENGTH = 2000.0
 
 onready var camera = $MainCamera
 onready var mousecast = $MouseCast

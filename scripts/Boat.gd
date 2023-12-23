@@ -32,7 +32,7 @@ var sinking : bool = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	if(!global): global = get_parent()
+	if(!global): global = get_tree().current_scene
 	$AnimationPlayer.play("bob")
 
 #func init():
@@ -65,12 +65,6 @@ func turn_sail(delta : float) -> void:
 	else:
 		# make dir local
 		mouse_dir = transform.basis.xform_inv(mouse_dir)
-		
-		mouse_dir.y = $dir_indicator_debug.transform.origin.y # DEBUG
-		$dir_indicator_debug.transform = $dir_indicator_debug.transform.looking_at(mouse_dir, Vector3.UP) # DEBUG
-		#if (Time.get_ticks_usec()%10 < 2): print(-$dir_indicator_debug/pointer_debug.transform.basis.z) # DEBUG
-		#mouse_dir.y = 0 # DEBUG
-		#if (Time.get_ticks_usec()%10 < 2): print(oldmouse_dir, " => ", mouse_dir) # DEBUG
 
 		# get angle between sail and mouse_dir
 		mouse_dir.y = sail_dir.transform.origin.y
@@ -88,26 +82,19 @@ func turn_sail(delta : float) -> void:
 # this force is applied in the direction of sail_dir
 func get_sail_force() -> Vector3:
 	var wind_vec : Vector3 = transform.basis.xform_inv(global.wind * global.wind_strength)
-	$windicator_debug.transform = $windicator_debug.transform.looking_at(wind_vec, Vector3.UP) # DEBUG
-	#if (Time.get_ticks_usec()%10 < 2): print("wind_vec: ", wind_vec) # DEBUG
 	if (wind_vec.dot(-sail_dir.transform.basis.z) < 0): return Vector3.ZERO # if wind goes into boat, instead provide no force
 	# this will be local
 	var force = wind_vec.project(-sail_dir.transform.basis.z)
 	if (force.z > 0): force.z = 0 # if force points behind the boat, neutralize the forward component
-#	if (Time.get_ticks_usec()%100 < 5): print(wind_vec, " ", -sail_dir.transform.basis.z, " | force_vec: ", force.normalized(), " magnitude: ", force.length()) # DEBUG
 	return -force # force is negated so that force.z equals forward acceleration
 
 func apply_sail_force(delta : float) -> void:
 	# get force, modify components if negative
 	var force = get_sail_force()
-#	if (Time.get_ticks_usec()%100 < 5):  print(force.normalized(), " | accel: ", force.z) # DEBUG
 	velocity = clamp(velocity + force.z - friction * delta, min_velocity, max_velocity)
 	rot_velocity = clamp(force.x * torque_dist, -max_rot_velocity, max_rot_velocity)
-	
-	$SailDir/force_pos_debug.transform.origin = $SailDir.transform.basis.xform_inv(15*force) # DEBUG
 
 func turn_and_move(_delta):
-	#if (Time.get_ticks_usec()%10 < 2): print("velocity is ", velocity) # DEBUG
 	# turn the boat
 	rotate_y(rot_velocity * torque_dist)
 	transform = transform.orthonormalized() # (preserves shape from floating point errors)
