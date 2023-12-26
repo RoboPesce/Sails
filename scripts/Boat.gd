@@ -11,7 +11,7 @@ export var max_rot_velocity : float = .5
 # fixed torque distance for horizontal wind force (also roughly corresponds to friction/decay)
 export var torque_dist : float = .25
 # max sail rotation speed
-export var sail_angular_speed : float = .5
+export var sail_angular_speed : float = .8
 # otherwise, how fast the sail turns towards its target
 export var sail_angular_lerp : float = .9
 

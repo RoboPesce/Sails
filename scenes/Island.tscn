@@ -1,9 +1,10 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://scripts/Island.gd" type="Script" id=1]
 [ext_resource path="res://resources/meshes/island.tres" type="ArrayMesh" id=2]
 [ext_resource path="res://resources/materials/SmokeParticles.gdshader" type="Shader" id=3]
 [ext_resource path="res://resources/meshes/cloud.tres" type="ArrayMesh" id=4]
+[ext_resource path="res://scenes/VolcanoAttack.tscn" type="PackedScene" id=5]
 
 [sub_resource type="SpatialMaterial" id=2]
 albedo_color = Color( 0.423529, 0.380392, 0.380392, 1 )
@@ -37,9 +38,13 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 17.8493, -3.25297 )
 amount = 250
 lifetime = 15.0
 randomness = 0.2
+visibility_aabb = AABB( -500, -500, -500, 1000, 1000, 1000 )
 process_material = SubResource( 4 )
 draw_pass_1 = ExtResource( 4 )
 
 [node name="DELETE" type="DirectionalLight" parent="."]
 transform = Transform( 1, 0, 0, 0, 0.795949, 0.605363, 0, -0.605363, 0.795949, 0, 71.955, 95.4527 )
 editor_only = true
+
+[node name="VolcanoAttack" parent="." instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5337, 21.8307, 38.4349 )
