@@ -9,10 +9,10 @@ uniform vec4 light_orange: hint_color = vec4(1.0, 0.8, 0.4, 1.0);
 
 const float TWO_PI = 2.0 * 3.14159;
 const int NUM_LINES = 8;
-const float VERT_FREQUENCY = 4.0;
-const float WAVINESS = 0.01;
-const float SPACE_BETWEEN = 0.8;
-const float SPEED_SCALE = 6.0;
+const float VERT_FREQUENCY = 1.0;
+const float WAVINESS = 0.02;
+const float SPACE_BETWEEN = 0.7;
+const float SPEED_SCALE = 50.0;
 
 float normalized_cos(float x)
 {
@@ -26,10 +26,12 @@ void vertex()
 
 void fragment()
 {
-	float mask = normalized_cos((UV.x + WAVINESS * cos(TIME * SPEED_SCALE + UV.y * 2.0 * TWO_PI * VERT_FREQUENCY)) * TWO_PI * float(NUM_LINES));
+	vec3 vertex = ( CAMERA_MATRIX * vec4( VERTEX, 1.0 ) ).xyz;
+	
+	float mask = normalized_cos((UV.x + WAVINESS * cos(-TIME * SPEED_SCALE + vertex.y * VERT_FREQUENCY * 3.0)) * TWO_PI * float(NUM_LINES));
 	mask = (mask >= SPACE_BETWEEN ? 1.0 : 0.0);
 	
 	ALBEDO = (light_orange * mask + dark_orange * (1.0 - mask)).rgb;
 	
-	EMISSION = 0.5 * light_orange.rgb;
+	EMISSION = 0.5 * light_orange.rgb;	
 }"

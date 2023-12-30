@@ -7,6 +7,11 @@
 [node name="VolcanoAttack" type="Spatial"]
 
 [node name="Lava" type="MeshInstance" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0 )
 mesh = SubResource( 1 )
 material/0 = ExtResource( 1 )
+
+[node name="OmniLight" type="OmniLight" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.775747, 0 )
+light_color = Color( 0.882353, 0.462745, 0.156863, 1 )
+omni_range = 412.184
