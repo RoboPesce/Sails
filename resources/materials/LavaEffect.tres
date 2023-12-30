@@ -5,7 +5,7 @@ code = "shader_type spatial;
 
 void vertex()
 {
-	vec3 local_pos = mat3(MODELVIEW_MATRIX) * VERTEX + MODELVIEW_MATRIX[3].xyz;
+	VERTEX = mat3(MODELVIEW_MATRIX) * VERTEX + MODELVIEW_MATRIX[3].xyz;
 }
 
 void fragment()

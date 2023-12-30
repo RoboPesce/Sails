@@ -9,6 +9,7 @@ uniform float spread_multiplier = 0.25;
 // for calculating movement direction
 uniform vec3 wind_dir = vec3(0.0, 0.0, -1.0);
 uniform float wind_strength = 1.0;
+uniform float wind_strength_multiplier = 1.5;
 uniform float friction = 0.5;
 uniform float init_vert = 5.0;
 uniform float init_scale = 0.5;
@@ -87,8 +88,9 @@ void vertex()
 		CUSTOM.w = 0.90;
 	}
 	
-	VELOCITY.x += wind_dir.x * wind_strength * DELTA;
-	VELOCITY.z += wind_dir.z * wind_strength * DELTA;
+	float velocity_multiplier = wind_strength * wind_strength_multiplier * DELTA;
+	VELOCITY.x += wind_dir.x * velocity_multiplier;
+	VELOCITY.z += wind_dir.z * velocity_multiplier;
 	if (VELOCITY.y > 0.0) VELOCITY.y -= DELTA * friction;
 	
 	// Rescale smoke to slowly grow and shrink

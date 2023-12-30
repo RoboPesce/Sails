@@ -16,8 +16,6 @@ export var sail_angular_speed : float = .8
 export var sail_angular_lerp : float = .9
 
 # References
-# set on init
-var global = null
 # allows rotation of sail mesh
 onready var sail_pivot : Spatial = $HullMesh/SailPivot
 # keeps track of rotation of sail
@@ -32,7 +30,6 @@ var sinking : bool = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	if(!global): global = get_tree().current_scene
 	$AnimationPlayer.play("bob")
 
 #func init():
@@ -47,12 +44,12 @@ func _physics_process(_delta):
 
 # get the (normalized) direction the boat is commanded to go in
 func get_dir_to_mouse() -> Vector3:
-	# if(!global): return Vector3.ZERO
+	# if(!Global): return Vector3.ZERO
 	var dir : Vector3
-	if(global.is_compass_cardinal):
-		dir = global.compass_dir # normalized by default
+	if(Global.is_compass_cardinal):
+		dir = Global.compass_dir # normalized by default
 	else:
-		dir = global.mouse_pos - transform.origin
+		dir = Global.mouse_pos - transform.origin
 		dir.y = 0
 		if(dir != Vector3.ZERO): dir = dir.normalized()
 	return dir
@@ -81,7 +78,7 @@ func turn_sail(delta : float) -> void:
 # roughly, this is the flux of the wind through the sail
 # this force is applied in the direction of sail_dir
 func get_sail_force() -> Vector3:
-	var wind_vec : Vector3 = transform.basis.xform_inv(global.wind * global.wind_strength)
+	var wind_vec : Vector3 = transform.basis.xform_inv(Global.wind * Global.wind_strength)
 	if (wind_vec.dot(-sail_dir.transform.basis.z) < 0): return Vector3.ZERO # if wind goes into boat, instead provide no force
 	# this will be local
 	var force = wind_vec.project(-sail_dir.transform.basis.z)
