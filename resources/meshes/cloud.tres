@@ -1,6 +1,6 @@
 [gd_resource type="ArrayMesh" load_steps=3 format=2]
 
-[ext_resource path="res://resources/materials/SmokeEffect.tres" type="Shader" id=1]
+[ext_resource path="res://resources/materials/Island/SmokeEffect.tres" type="Shader" id=1]
 
 [sub_resource type="ShaderMaterial" id=1]
 shader = ExtResource( 1 )
