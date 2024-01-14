@@ -12,7 +12,7 @@ const int NUM_LINES = 8;
 const float VERT_FREQUENCY = 1.0;
 const float WAVINESS = 0.02;
 const float SPACE_BETWEEN = 0.7;
-const float SPEED_SCALE = 50.0;
+const float SPEED_SCALE = 69.0;
 
 float normalized_cos(float x)
 {

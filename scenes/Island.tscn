@@ -36,7 +36,6 @@ shape = SubResource( 3 )
 
 [node name="Smoke" type="Particles" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 17.8493, -3.25297 )
-visible = false
 amount = 250
 lifetime = 15.0
 randomness = 0.2
@@ -49,4 +48,4 @@ transform = Transform( 1, 0, 0, 0, 0.795949, 0.605363, 0, -0.605363, 0.795949, 0
 editor_only = true
 
 [node name="VolcanoAttack" parent="." instance=ExtResource( 5 )]
-transform = Transform( 2.5, 0, 0, 0, 8.32948, 0, 0, 0, 2.5, -0.0301436, 19.3077, -3.24823 )
+transform = Transform( 2.5, 0, 0, 0, 100, 0, 0, 0, 2.5, 0, 0, 0 )

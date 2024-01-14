@@ -17,10 +17,10 @@ script = ExtResource( 3 )
 noise_texture = ExtResource( 6 )
 
 [node name="Sun" type="DirectionalLight" parent="."]
-transform = Transform( 0.926641, 0.319415, -0.198267, 0.129409, 0.224144, 0.965926, 0.352971, -0.920725, 0.166366, 0, 80, 0 )
+transform = Transform( 0.926642, 0.319415, -0.198266, 0.129409, 0.224144, 0.965926, 0.352971, -0.920725, 0.166366, 0, 80, 0 )
 light_energy = 1.25
 light_specular = 2.0
-shadow_color = Color( 0.752941, 0.713726, 0.376471, 1 )
+shadow_color = Color( 1, 0.792157, 0.305882, 1 )
 
 [node name="MouseCast" type="RayCast" parent="."]
 exclude_parent = false
