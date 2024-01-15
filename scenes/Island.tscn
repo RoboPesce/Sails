@@ -43,9 +43,9 @@ visibility_aabb = AABB( -500, -500, -500, 1000, 1000, 1000 )
 process_material = SubResource( 4 )
 draw_pass_1 = ExtResource( 4 )
 
+[node name="VolcanoAttack" parent="." instance=ExtResource( 5 )]
+transform = Transform( 2.5, 0, 0, 0, 1, 0, 0, 0, 2.5, 0, 19.1471, -3.56973 )
+
 [node name="DELETE" type="DirectionalLight" parent="."]
 transform = Transform( 1, 0, 0, 0, 0.795949, 0.605363, 0, -0.605363, 0.795949, 0, 71.955, 95.4527 )
 editor_only = true
-
-[node name="VolcanoAttack" parent="." instance=ExtResource( 5 )]
-transform = Transform( 2.5, 0, 0, 0, 100, 0, 0, 0, 2.5, 0, 0, 0 )

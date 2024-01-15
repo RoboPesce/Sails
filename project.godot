@@ -60,3 +60,4 @@ spawn_boat={
 3d_physics/layer_1="Island"
 3d_physics/layer_2="Boat"
 3d_physics/layer_3="Water"
+3d_physics/layer_4="Hazard"

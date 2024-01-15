@@ -1,13 +1,16 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://resources/materials/Island/LavaEffect.tres" type="Material" id=1]
+[ext_resource path="res://scripts/VolcanoAttack.gd" type="Script" id=2]
 
 [sub_resource type="CylinderMesh" id=1]
+
+[sub_resource type="CylinderShape" id=6]
 
 [sub_resource type="Animation" id=2]
 length = 0.001
 tracks/0/type = "value"
-tracks/0/path = NodePath(".:translation")
+tracks/0/path = NodePath("LavaContainer:translation")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/imported = false
@@ -19,7 +22,7 @@ tracks/0/keys = {
 "values": [ Vector3( 0, 0, 0 ) ]
 }
 tracks/1/type = "value"
-tracks/1/path = NodePath("LavaContainer:translation")
+tracks/1/path = NodePath("LavaContainer:rotation_degrees")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/imported = false
@@ -33,9 +36,7 @@ tracks/1/keys = {
 
 [sub_resource type="Animation" id=5]
 resource_name = "ShootDown"
-
-[sub_resource type="Animation" id=3]
-resource_name = "ShootUp"
+length = 2.0
 tracks/0/type = "value"
 tracks/0/path = NodePath("LavaContainer:translation")
 tracks/0/interp = 1
@@ -43,13 +44,56 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 1 ),
+"times": PoolRealArray( 0, 2 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 0,
-"values": [ Vector3( 0, 0, 0 ), Vector3( 0, 150, 0 ) ]
+"values": [ Vector3( 0, 450, 0 ), Vector3( 0, -100, 0 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("LavaContainer:rotation_degrees")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector3( 180, 0, 0 ) ]
 }
 
-[node name="VolcanoAttack" type="Spatial"]
+[sub_resource type="Animation" id=3]
+resource_name = "ShootUp"
+length = 2.0
+tracks/0/type = "value"
+tracks/0/path = NodePath("LavaContainer:translation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector3( 0, 0, 0 ), Vector3( 0, 500, 0 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("LavaContainer:rotation_degrees")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector3( 0, 0, 0 ) ]
+}
+
+[node name="VolcanoAttack" type="KinematicBody"]
+collision_layer = 8
+collision_mask = 2
+script = ExtResource( 2 )
 
 [node name="LavaContainer" type="Spatial" parent="."]
 
@@ -62,7 +106,13 @@ material/0 = ExtResource( 1 )
 light_color = Color( 0.882353, 0.462745, 0.156863, 1 )
 omni_range = 412.184
 
+[node name="CollisionShape" type="CollisionShape" parent="."]
+transform = Transform( 1, 0, 0, 0, 10, 0, 0, 0, 1, 0, -10, 0 )
+shape = SubResource( 6 )
+
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 anims/RESET = SubResource( 2 )
 anims/ShootDown = SubResource( 5 )
 anims/ShootUp = SubResource( 3 )
+
+[connection signal="animation_finished" from="AnimationPlayer" to="." method="play_next_animation"]
